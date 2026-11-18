@@ -48,7 +48,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     name: 'बहुजन समाज पार्टी (BSP)',
     shortName: 'बसपा',
     primaryColor: '#22409A',
-    secondaryColor: '#FFFFFF',
+    secondaryColor: '#141413',
     slogan: 'सर्वजन हिताय, सर्वजन सुखाय',
     leadersText: 'मान्यवर कांशीराम जी • बहन कु. मायावती जी',
     leaderPhotoUrl: 'https://wikimedia.org',
@@ -78,7 +78,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     name: 'राष्ट्रीय जनता दल (RJD)',
     shortName: 'राजद',
     primaryColor: '#008000',
-    secondaryColor: '#FFFFFF',
+    secondaryColor: '#141413',
     slogan: 'सामाजिक न्याय और धर्मनिरपेक्षता',
     leadersText: 'मा. लालू प्रसाद यादव जी • मा. तेजस्वी यादव जी',
     leaderPhotoUrl: '',
@@ -88,7 +88,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     name: 'जनता दल यूनाइटेड (JDU)',
     shortName: 'जदयू',
     primaryColor: '#006400',
-    secondaryColor: '#FFFFFF',
+    secondaryColor: '#141413',
     slogan: 'न्याय के साथ विकास',
     leadersText: 'मा. नीतीश कुमार जी',
     leaderPhotoUrl: '',
@@ -105,7 +105,6 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
   },
 ];
 
-// आपका गुप्त एडमिन पिन (इसे केवल आप जानते हैं)
 const ADMIN_PIN = '7860';
 
 export function PosterMakerTab() {
@@ -121,12 +120,10 @@ export function PosterMakerTab() {
   const [occasionText, setOccasionText] = useState('हार्दिक शुभकामनाएं एवं अभिनंदन');
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
 
-  // एडमिन सुरक्षा लॉक स्टेट
   const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [showPinBox, setShowPinBox] = useState(false);
 
-  // नया बैनर/नेता जोड़ने के लिए एडमिन फॉर्म
   const [newPartyName, setNewPartyName] = useState('');
   const [newLeadersText, setNewLeadersText] = useState('');
   const [newColor, setNewColor] = useState('#E31E24');
@@ -196,7 +193,6 @@ export function PosterMakerTab() {
 
   return (
     <div className="space-y-6">
-      {/* शीर्षक और एडमिन लॉक बटन */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E6E1D6] bg-white p-4 shadow-sm">
         <div>
           <h2 className="font-display text-xl font-bold text-[#141413]">
@@ -228,7 +224,6 @@ export function PosterMakerTab() {
         )}
       </div>
 
-      {/* एडमिन पिन बॉक्स */}
       {showPinBox && !isAdminUnlocked && (
         <div className="rounded-2xl border border-[#B8860B] bg-amber-50/70 p-4">
           <p className="text-sm font-bold text-[#141413] mb-2 flex items-center gap-1.5">
@@ -255,7 +250,6 @@ export function PosterMakerTab() {
         </div>
       )}
 
-      {/* एडमिन पैनल: नया बैनर और नेताओं की फोटो जोड़ने का फॉर्म */}
       {isAdminUnlocked && (
         <form
           onSubmit={handleAddNewPartyBanner}
@@ -277,3 +271,8 @@ export function PosterMakerTab() {
               type="text"
               value={newLeadersText}
               onChange={(e) => setNewLeadersText(e.target.value)}
+              placeholder="शीर्ष नेताओं के नाम लिखें"
+              className="rounded-xl border border-[#E6E1D6] px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
