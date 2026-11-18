@@ -1,0 +1,6 @@
+{
+  "name": "Dasta Digital Photo Studio",
+  "description": "Wedding photography, 4K drone cinema, QR client photo galleries, and custom poster maker by Dasta Digital Photo Studio.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
