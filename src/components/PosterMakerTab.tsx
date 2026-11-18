@@ -1,4 +1,4 @@
-import {Download, ImagePlus, Lock, Plus, ShieldAlert, Sparkles, Unlock, User} from 'lucide-react';
+import {Download, ImagePlus, Lock, Plus, ShieldAlert, Unlock, User} from 'lucide-react';
 import {useRef, useState} from 'react';
 
 interface PoliticalParty {
@@ -21,7 +21,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     secondaryColor: '#008B45',
     slogan: 'काम बोलता है • सबका सम्मान, सबका विकास',
     leadersText: 'मा. मुलायम सिंह यादव जी • मा. अखिलेश यादव जी',
-    leaderPhotoUrl: 'https://wikimedia.org',
+    leaderPhotoUrl: '',
   },
   {
     id: 'bjp',
@@ -31,7 +31,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     secondaryColor: '#138808',
     slogan: 'सबका साथ, सबका विकास, सबका विश्वास',
     leadersText: 'मा. नरेंद्र मोदी जी • मा. योगी आदित्यनाथ जी • मा. जे.पी. नड्डा जी',
-    leaderPhotoUrl: 'https://wikimedia.org',
+    leaderPhotoUrl: '',
   },
   {
     id: 'inc',
@@ -41,7 +41,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     secondaryColor: '#008000',
     slogan: 'हाथ बदलेगा हालात • न्याय का हक मिलने तक',
     leadersText: 'मा. मल्लिकार्जुन खड़गे जी • मा. राहुल गांधी जी • मा. प्रियंका गांधी जी',
-    leaderPhotoUrl: 'https://wikimedia.org',
+    leaderPhotoUrl: '',
   },
   {
     id: 'bsp',
@@ -51,7 +51,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     secondaryColor: '#141413',
     slogan: 'सर्वजन हिताय, सर्वजन सुखाय',
     leadersText: 'मान्यवर कांशीराम जी • बहन कु. मायावती जी',
-    leaderPhotoUrl: 'https://wikimedia.org',
+    leaderPhotoUrl: '',
   },
   {
     id: 'aap',
@@ -61,7 +61,7 @@ const DEFAULT_PARTIES: PoliticalParty[] = [
     secondaryColor: '#FDB913',
     slogan: 'ईमानदार राजनीति • शिक्षा और स्वास्थ्य की गारंटी',
     leadersText: 'मा. अरविंद केजरीवाल जी • मा. भगवंत मान जी',
-    leaderPhotoUrl: 'https://wikimedia.org',
+    leaderPhotoUrl: '',
   },
   {
     id: 'rld',
@@ -276,3 +276,18 @@ export function PosterMakerTab() {
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-xs font-semibold text-[#141413]">
+              पार्टी का मुख्य रंग:
+              <input
+                type="color"
+                value={newColor}
+                onChange={(e) => setNewColor(e.target.value)}
+                className="h-8 w-12 cursor-pointer rounded border"
+              />
+            </label>
+            <label className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#E6E1D6] bg-[#FAF9F6] px-3 py-2 text-xs font-semibold">
+              <ImagePlus className="h-4 w-4 text-[#B8860B]" />
+              नेता/बैनर फोटो अपलोड करें
+              <input
+                type="file"
+    
