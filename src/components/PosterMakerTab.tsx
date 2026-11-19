@@ -1,293 +1,305 @@
-import {Download, ImagePlus, Lock, Plus, ShieldAlert, Unlock, User} from 'lucide-react';
+import {
+  Award,
+  Briefcase,
+  Download,
+  Flag,
+  ImagePlus,
+  Lock,
+  MapPin,
+  Phone,
+  Plus,
+  ShieldAlert,
+  Sparkles,
+  Unlock,
+  User,
+} from 'lucide-react';
 import {useRef, useState} from 'react';
 
-interface PoliticalParty {
+type MakerCategory = 'political' | 'festival' | 'visiting';
+
+interface TemplateItem {
   id: string;
+  category: MakerCategory;
   name: string;
-  shortName: string;
+  shortTag: string;
   primaryColor: string;
   secondaryColor: string;
-  slogan: string;
-  leadersText: string;
-  leaderPhotoUrl: string;
+  defaultTitle: string;
+  defaultSubtitle: string;
+  leadersOrDetails: string;
 }
 
-const DEFAULT_PARTIES: PoliticalParty[] = [
+const DEFAULT_TEMPLATES: TemplateItem[] = [
+  // राजनीतिक पार्टियां
   {
     id: 'sp',
+    category: 'political',
     name: 'समाजवादी पार्टी (SP)',
-    shortName: 'सपा',
+    shortTag: 'सपा',
     primaryColor: '#E31E24',
     secondaryColor: '#008B45',
-    slogan: 'काम बोलता है • सबका सम्मान, सबका विकास',
-    leadersText: 'मा. मुलायम सिंह यादव जी • मा. अखिलेश यादव जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'काम बोलता है • सबका सम्मान, सबका विकास',
+    leadersOrDetails: 'मा. मुलायम सिंह यादव जी • मा. अखिलेश यादव जी',
   },
   {
     id: 'bjp',
+    category: 'political',
     name: 'भारतीय जनता पार्टी (BJP)',
-    shortName: 'भाजपा',
+    shortTag: 'भाजपा',
     primaryColor: '#FF671F',
     secondaryColor: '#138808',
-    slogan: 'सबका साथ, सबका विकास, सबका विश्वास',
-    leadersText: 'मा. नरेंद्र मोदी जी • मा. योगी आदित्यनाथ जी • मा. जे.पी. नड्डा जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'सबका साथ, सबका विकास, सबका विश्वास',
+    leadersOrDetails: 'मा. नरेंद्र मोदी जी • मा. योगी आदित्यनाथ जी • मा. जे.पी. नड्डा जी',
   },
   {
     id: 'inc',
+    category: 'political',
     name: 'भारतीय राष्ट्रीय कांग्रेस (INC)',
-    shortName: 'कांग्रेस',
+    shortTag: 'कांग्रेस',
     primaryColor: '#19AAED',
     secondaryColor: '#008000',
-    slogan: 'हाथ बदलेगा हालात • न्याय का हक मिलने तक',
-    leadersText: 'मा. मल्लिकार्जुन खड़गे जी • मा. राहुल गांधी जी • मा. प्रियंका गांधी जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'हाथ बदलेगा हालात • न्याय का हक मिलने तक',
+    leadersOrDetails: 'मा. मल्लिकार्जुन खड़गे जी • मा. राहुल गांधी जी • मा. प्रियंका गांधी जी',
   },
   {
     id: 'bsp',
+    category: 'political',
     name: 'बहुजन समाज पार्टी (BSP)',
-    shortName: 'बसपा',
+    shortTag: 'बसपा',
     primaryColor: '#22409A',
     secondaryColor: '#141413',
-    slogan: 'सर्वजन हिताय, सर्वजन सुखाय',
-    leadersText: 'मान्यवर कांशीराम जी • बहन कु. मायावती जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं जय भीम',
+    defaultSubtitle: 'सर्वजन हिताय, सर्वजन सुखाय',
+    leadersOrDetails: 'मान्यवर कांशीराम जी • बहन कु. मायावती जी',
   },
   {
     id: 'aap',
+    category: 'political',
     name: 'आम आदमी पार्टी (AAP)',
-    shortName: 'आप',
+    shortTag: 'आप',
     primaryColor: '#0072B0',
     secondaryColor: '#FDB913',
-    slogan: 'ईमानदार राजनीति • शिक्षा और स्वास्थ्य की गारंटी',
-    leadersText: 'मा. अरविंद केजरीवाल जी • मा. भगवंत मान जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'ईमानदार राजनीति • शिक्षा और स्वास्थ्य की गारंटी',
+    leadersOrDetails: 'मा. अरविंद केजरीवाल जी • मा. भगवंत मान जी',
   },
   {
     id: 'rld',
+    category: 'political',
     name: 'राष्ट्रीय लोक दल (RLD)',
-    shortName: 'रालोद',
+    shortTag: 'रालोद',
     primaryColor: '#009E49',
     secondaryColor: '#D9232E',
-    slogan: 'जय जवान, जय किसान',
-    leadersText: 'चौधरी चरण सिंह जी • मा. जयंत चौधरी जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'जय जवान, जय किसान',
+    leadersOrDetails: 'चौधरी चरण सिंह जी • मा. जयंत चौधरी जी',
   },
   {
     id: 'rjd',
+    category: 'political',
     name: 'राष्ट्रीय जनता दल (RJD)',
-    shortName: 'राजद',
+    shortTag: 'राजद',
     primaryColor: '#008000',
     secondaryColor: '#141413',
-    slogan: 'सामाजिक न्याय और धर्मनिरपेक्षता',
-    leadersText: 'मा. लालू प्रसाद यादव जी • मा. तेजस्वी यादव जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'सामाजिक न्याय और धर्मनिरपेक्षता',
+    leadersOrDetails: 'मा. लालू प्रसाद यादव जी • मा. तेजस्वी यादव जी',
   },
   {
     id: 'jdu',
+    category: 'political',
     name: 'जनता दल यूनाइटेड (JDU)',
-    shortName: 'जदयू',
+    shortTag: 'जदयू',
     primaryColor: '#006400',
     secondaryColor: '#141413',
-    slogan: 'न्याय के साथ विकास',
-    leadersText: 'मा. नीतीश कुमार जी',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं अभिनंदन',
+    defaultSubtitle: 'न्याय के साथ विकास',
+    leadersOrDetails: 'मा. नीतीश कुमार जी',
   },
   {
-    id: 'other',
-    name: 'अन्य सभी भारतीय पार्टियां / निर्दलीय',
-    shortName: 'भारत',
+    id: 'ind',
+    category: 'political',
+    name: 'निर्दलीय / ग्राम प्रधान / समाजसेवी',
+    shortTag: 'समाजसेवी',
     primaryColor: '#B8860B',
     secondaryColor: '#141413',
-    slogan: 'जनसेवा ही हमारा संकल्प है',
-    leadersText: 'जनता के आशीर्वाद से समाज सेवा में समर्पित',
-    leaderPhotoUrl: '',
+    defaultTitle: 'हार्दिक शुभकामनाएं एवं आभार',
+    defaultSubtitle: 'जनसेवा ही हमारा परम धर्म है',
+    leadersOrDetails: 'समस्त क्षेत्रवासियों के स्नेह और आशीर्वाद सहित',
+  },
+
+  // त्योहार एवं विशेष अवसर
+  {
+    id: 'diwali',
+    category: 'festival',
+    name: 'शुभ दीपावली एवं धनतेरस',
+    shortTag: 'दीपावली',
+    primaryColor: '#D97706',
+    secondaryColor: '#7C2D12',
+    defaultTitle: 'शुभ दीपावली की हार्दिक शुभकामनाएं',
+    defaultSubtitle: 'माँ लक्ष्मी और श्री गणेश जी की कृपा आप पर सदैव बनी रहे',
+    leadersOrDetails: 'दीपों का यह पावन पर्व आपके जीवन में सुख, समृद्धि और खुशहाली लाए',
+  },
+  {
+    id: 'holi',
+    category: 'festival',
+    name: 'रंगोत्सव होली मिलन',
+    shortTag: 'होली',
+    primaryColor: '#DB2777',
+    secondaryColor: '#7E22CE',
+    defaultTitle: 'रंगों के महापर्व होली की शुभकामनाएं',
+    defaultSubtitle: 'प्रेम, सौहार्द और खुशियों के रंगों से भरा रहे आपका जीवन',
+    leadersOrDetails: 'समस्त देश एवं क्षेत्रवासियों को होली की ढेरों बधाइयां',
+  },
+  {
+    id: 'eid',
+    category: 'festival',
+    name: 'ईद-उल-फितर / ईद मुबारक',
+    shortTag: 'ईद मुबारक',
+    primaryColor: '#059669',
+    secondaryColor: '#064E3B',
+    defaultTitle: 'ईद मुबारक • हार्दिक शुभकामनाएं',
+    defaultSubtitle: 'अमन, चैन, भाईचारे और खुशियों की दुआओं के साथ',
+    leadersOrDetails: 'आप सभी को ईद के मुबारक मौके पर दिल से मुबारकबाद',
+  },
+  {
+    id: 'rakhi',
+    category: 'festival',
+    name: 'रक्षाबंधन पावन पर्व',
+    shortTag: 'रक्षाबंधन',
+    primaryColor: '#DC2626',
+    secondaryColor: '#991B1B',
+    defaultTitle: 'रक्षाबंधन की हार्दिक शुभकामनाएं',
+    defaultSubtitle: 'भाई-बहन के अटूट प्रेम और विश्वास का पावन पर्व',
+    leadersOrDetails: 'समस्त माताओं, बहनों और क्षेत्रवासियों को रक्षाबंधन की बधाई',
+  },
+  {
+    id: 'navratri',
+    category: 'festival',
+    name: 'शारदीय / चैत्र नवरात्रि एवं दशहरा',
+    shortTag: 'नवरात्रि',
+    primaryColor: '#EA580C',
+    secondaryColor: '#9A3412',
+    defaultTitle: 'पावन नवरात्रि की हार्दिक शुभकामनाएं',
+    defaultSubtitle: 'जय माता दी • माँ दुर्गा आप सभी की मनोकामनाएं पूर्ण करें',
+    leadersOrDetails: 'शक्ति, भक्ति और विजय के पावन पर्व की मंगलकामनाएं',
+  },
+  {
+    id: 'independence',
+    category: 'festival',
+    name: 'स्वतंत्रता दिवस / गणतंत्र दिवस',
+    shortTag: 'राष्ट्रीय पर्व',
+    primaryColor: '#FF671F',
+    secondaryColor: '#138808',
+    defaultTitle: 'राष्ट्रीय पर्व की हार्दिक शुभकामनाएं',
+    defaultSubtitle: 'वंदे मातरम् • भारत माता की जय • जय हिंद',
+    leadersOrDetails: 'आइए मिलकर सशक्त, समृद्ध और आत्मनिर्भर भारत का निर्माण करें',
+  },
+  {
+    id: 'birthday',
+    category: 'festival',
+    name: 'जन्मदिन एवं वैवाहिक वर्षगांठ बधाई',
+    shortTag: 'जन्मदिन',
+    primaryColor: '#4F46E5',
+    secondaryColor: '#1E1B4B',
+    defaultTitle: 'जन्मदिन की हार्दिक बधाई एवं शुभकामनाएं',
+    defaultSubtitle: 'ईश्वर आपको उत्तम स्वास्थ्य और दीर्घायु प्रदान करें',
+    leadersOrDetails: 'आप जीवन में सदैव उन्नति के शिखर पर आगे बढ़ते रहें',
+  },
+
+  // विजिटिंग कार्ड
+  {
+    id: 'card_royal',
+    category: 'visiting',
+    name: 'रॉयल गोल्ड बिजनेस कार्ड',
+    shortTag: 'प्रीमियम कार्ड',
+    primaryColor: '#141413',
+    secondaryColor: '#B8860B',
+    defaultTitle: 'आपकी दुकान / संस्था का नाम',
+    defaultSubtitle: 'हमारे यहाँ सभी कार्य संतोषजनक एवं उचित मूल्य पर किए जाते हैं',
+    leadersOrDetails: 'पता: मुख्य बाजार, तहसील रोड, जनपद कासगंज (उ.प्र.)',
+  },
+  {
+    id: 'card_blue',
+    category: 'visiting',
+    name: 'प्रोफेशनल ब्लू विजिटिंग कार्ड',
+    shortTag: 'ऑफिस कार्ड',
+    primaryColor: '#1E3A8A',
+    secondaryColor: '#0284C7',
+    defaultTitle: 'आपकी कंपनी / प्रेस / कार्यालय का नाम',
+    defaultSubtitle: 'विश्वसनीय सेवा • आधुनिक तकनीक • त्वरित समाधान',
+    leadersOrDetails: 'पता: आपका पूरा पता यहाँ लिखें',
+  },
+  {
+    id: 'card_red',
+    category: 'visiting',
+    name: 'मीडिया / प्रेस / जनसेवा कार्ड',
+    shortTag: 'प्रेस / सेवा',
+    primaryColor: '#991B1B',
+    secondaryColor: '#141413',
+    defaultTitle: 'प्रेस / जनसेवा केंद्र / स्टूडियो नाम',
+    defaultSubtitle: 'सत्य के साथ • जनहित में सदैव समर्पित',
+    leadersOrDetails: 'पता: जिला मुख्यालय / ग्राम एवं पोस्ट का नाम',
   },
 ];
 
 const ADMIN_PIN = '7860';
 
 export function PosterMakerTab() {
-  const [parties, setParties] = useState<PoliticalParty[]>(() => {
-    const saved = localStorage.getItem('dasta_political_parties');
-    return saved ? JSON.parse(saved) : DEFAULT_PARTIES;
+  const [templates, setTemplates] = useState<TemplateItem[]>(() => {
+    const saved = localStorage.getItem('dasta_all_templates_v2');
+    return saved ? JSON.parse(saved) : DEFAULT_TEMPLATES;
   });
 
-  const [selectedPartyId, setSelectedPartyId] = useState<string>('sp');
+  const [activeCategory, setActiveCategory] = useState<MakerCategory>('political');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('sp');
+
+  const filteredTemplates = templates.filter((t) => t.category === activeCategory);
+  const activeTemplate =
+    filteredTemplates.find((t) => t.id === selectedTemplateId) || filteredTemplates[0];
+
   const [userName, setUserName] = useState('');
   const [userDesignation, setUserDesignation] = useState('युवा नेता / समाजसेवी');
   const [userMobile, setUserMobile] = useState('');
-  const [occasionText, setOccasionText] = useState('हार्दिक शुभकामनाएं एवं अभिनंदन');
+  const [customTitle, setCustomTitle] = useState(activeTemplate.defaultTitle);
+  const [customAddressOrSub, setCustomAddressOrSub] = useState(activeTemplate.leadersOrDetails);
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
 
   const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [showPinBox, setShowPinBox] = useState(false);
 
-  const [newPartyName, setNewPartyName] = useState('');
-  const [newLeadersText, setNewLeadersText] = useState('');
-  const [newColor, setNewColor] = useState('#E31E24');
-  const [newLeaderImg, setNewLeaderImg] = useState('');
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemTitle, setNewItemTitle] = useState('');
+  const [newItemDetails, setNewItemDetails] = useState('');
+  const [newItemColor, setNewItemColor] = useState('#E31E24');
 
-  const posterRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const activeParty = parties.find((p) => p.id === selectedPartyId) || parties[0];
+  const handleCategoryChange = (cat: MakerCategory) => {
+    setActiveCategory(cat);
+    const first = templates.find((t) => t.category === cat);
+    if (first) {
+      setSelectedTemplateId(first.id);
+      setCustomTitle(first.defaultTitle);
+      setCustomAddressOrSub(first.leadersOrDetails);
+      if (cat === 'visiting') {
+        setUserDesignation('प्रोपराइटर / संचालक');
+      } else if (cat === 'festival') {
+        setUserDesignation('शुभेच्छु / समाजसेवी');
+      } else {
+        setUserDesignation('युवा नेता / समाजसेवी');
+      }
+    }
+  };
+
+  const handleTemplateSelect = (tpl: TemplateItem) => {
+    setSelectedTemplateId(tpl.id);
+    setCustomTitle(tpl.defaultTitle);
+    setCustomAddressOrSub(tpl.leadersOrDetails);
+  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setUserPhoto(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleAdminLeaderPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setNewLeaderImg(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleAdminUnlock = () => {
-    if (pinInput === ADMIN_PIN) {
-      setIsAdminUnlocked(true);
-      setShowPinBox(false);
-      setPinInput('');
-    } else {
-      alert('गलत एडमिन पिन! केवल स्टूडियो मालिक ही बदलाव कर सकते हैं।');
-    }
-  };
-
-  const handleAddNewPartyBanner = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newPartyName.trim()) return;
-    const updated: PoliticalParty[] = [
-      ...parties,
-      {
-        id: 'custom_' + Date.now(),
-        name: newPartyName.trim(),
-        shortName: newPartyName.trim().slice(0, 8),
-        primaryColor: newColor,
-        secondaryColor: '#141413',
-        slogan: 'जनसेवा और विकास हमारा संकल्प',
-        leadersText: newLeadersText.trim() || 'पार्टी के शीर्ष नेतृत्व के आशीर्वाद सहित',
-        leaderPhotoUrl: newLeaderImg,
-      },
-    ];
-    setParties(updated);
-    localStorage.setItem('dasta_political_parties', JSON.stringify(updated));
-    setNewPartyName('');
-    setNewLeadersText('');
-    setNewLeaderImg('');
-    alert('नया पार्टी बैनर सफलतापूर्वक जुड़ गया है!');
-  };
-
-  const handleDownloadPoster = () => {
-    if (!userName.trim()) {
-      alert('कृपया पोस्टर पर अपना नाम ज़रूर लिखें।');
-      return;
-    }
-    window.print();
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E6E1D6] bg-white p-4 shadow-sm">
-        <div>
-          <h2 className="font-display text-xl font-bold text-[#141413]">
-            सभी पार्टियों का बैनर एवं पोस्टर मेकर
-          </h2>
-          <p className="text-xs text-[#6B675E]">
-            पार्टी चुनें, अपनी फोटो लगाएं, नाम व नंबर डालें और तुरंत पोस्टर तैयार करें
-          </p>
-        </div>
-
-        {!isAdminUnlocked ? (
-          <button
-            type="button"
-            onClick={() => setShowPinBox(!showPinBox)}
-            className="flex items-center gap-1.5 rounded-xl border border-[#E6E1D6] bg-[#FAF9F6] px-3 py-2 text-xs font-semibold text-[#141413]"
-          >
-            <Lock className="h-3.5 w-3.5 text-[#B8860B]" />
-            एडमिन लॉक (केवल मालिक)
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setIsAdminUnlocked(false)}
-            className="flex items-center gap-1.5 rounded-xl bg-green-600 px-3 py-2 text-xs font-semibold text-white"
-          >
-            <Unlock className="h-3.5 w-3.5" />
-            एडमिन अनलॉक (लॉक करें)
-          </button>
-        )}
-      </div>
-
-      {showPinBox && !isAdminUnlocked && (
-        <div className="rounded-2xl border border-[#B8860B] bg-amber-50/70 p-4">
-          <p className="text-sm font-bold text-[#141413] mb-2 flex items-center gap-1.5">
-            <ShieldAlert className="h-4 w-4 text-[#B8860B]" />
-            नए नेता या पार्टी बैनर जोड़ने के लिए एडमिन पिन डालें:
-          </p>
-          <div className="flex gap-2">
-            <input
-              type="password"
-              maxLength={6}
-              value={pinInput}
-              onChange={(e) => setPinInput(e.target.value)}
-              placeholder="गुप्त पिन डालें"
-              className="rounded-xl border border-[#E6E1D6] bg-white px-3 py-2 text-sm"
-            />
-            <button
-              type="button"
-              onClick={handleAdminUnlock}
-              className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white"
-            >
-              खोलें
-            </button>
-          </div>
-        </div>
-      )}
-
-      {isAdminUnlocked && (
-        <form
-          onSubmit={handleAddNewPartyBanner}
-          className="space-y-3 rounded-2xl border-2 border-dashed border-[#B8860B] bg-white p-4"
-        >
-          <h3 className="text-sm font-bold text-[#B8860B] flex items-center gap-1.5">
-            <Plus className="h-4 w-4" /> नया पार्टी बैनर और नेताओं का फोटो जोड़ें (एडमिन मोड)
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <input
-              type="text"
-              value={newPartyName}
-              onChange={(e) => setNewPartyName(e.target.value)}
-              placeholder="पार्टी का नाम (जैसे: शिवसेना / TMC)"
-              className="rounded-xl border border-[#E6E1D6] px-3 py-2 text-sm"
-              required
-            />
-            <input
-              type="text"
-              value={newLeadersText}
-              onChange={(e) => setNewLeadersText(e.target.value)}
-              placeholder="शीर्ष नेताओं के नाम लिखें"
-              className="rounded-xl border border-[#E6E1D6] px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <label className="flex items-center gap-2 text-xs font-semibold text-[#141413]">
-              पार्टी का मुख्य रंग:
-              <input
-                type="color"
-                value={newColor}
-                onChange={(e) => setNewColor(e.target.value)}
-                className="h-8 w-12 cursor-pointer rounded border"
-              />
-            </label>
-            <label className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#E6E1D6] bg-[#FAF9F6] px-3 py-2 text-xs font-semibold">
-              <ImagePlus className="h-4 w-4 text-[#B8860B]" />
-              नेता/बैनर फोटो अपलोड करें
-              <input
-                type="file"
-    
