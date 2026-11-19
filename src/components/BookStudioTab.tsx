@@ -255,4 +255,44 @@ export function BookStudioTab({preselectedPackageId}: {preselectedPackageId?: st
                   <div className="flex items-center justify-between gap-2">
                     <span className="rounded-full bg-[#B8860B]/15 px-3 py-1 text-xs font-bold text-[#B8860B]">
                       {pkg.tier}
-  
+                    </span>
+                  <span className="text-base font-extrabold text-[#141413]">{pkg.price}</span>
+                </div>
+
+                <h4 className="mt-2 font-display text-lg font-bold text-[#141413]">{pkg.title}</h4>
+
+                <ul className="mt-3 space-y-1.5 text-xs text-[#6B675E]">
+                  {pkg.features.map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-1.5">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-600" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-4 flex items-center justify-between border-t border-[#E6E1D6] pt-3">
+                  <span className="text-xs font-bold text-[#B8860B]">
+                    {isSelected ? '✓ चुना गया पैकेज' : 'पैकेज चुनें'}
+                  </span>
+                  {isAdminUnlocked && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditing(pkg);
+                      }}
+                      className="flex items-center gap-1 rounded-lg bg-[#FAF9F6] px-2.5 py-1 text-xs font-semibold text-[#141413] border border-[#E6E1D6]"
+                    >
+                      <Edit3 className="h-3 w-3 text-[#B8860B]" /> एडिट
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+                  }
+      
